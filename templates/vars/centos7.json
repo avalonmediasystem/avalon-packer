@@ -1,0 +1,5 @@
+{
+  "centos_version": "7",
+  "centos_iso_url": "http://ftp.osuosl.org/pub/centos/7/isos/x86_64/CentOS-7-x86_64-DVD-1511.iso",
+  "centos_iso_checksum": "c875b0f1dabda14f00a3e261d241f63e"
+}

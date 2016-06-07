@@ -1,0 +1,9 @@
+:backends: yaml
+:yaml:
+  :datadir: /etc/puppet/hiera/data
+:hierarchy: 
+  - "%{::clientcert}"
+  - single-box
+  - custom
+  - local
+  - common

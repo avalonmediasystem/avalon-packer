@@ -1,0 +1,57 @@
+{ 
+  "variables": {
+    "centos_version": "6",
+    "centos_iso_url": "http://ftp.osuosl.org/pub/centos/6/isos/x86_64/CentOS-6.8-x86_64-bin-DVD1.iso",
+    "centos_iso_checksum": "f73c2c4dd333c202ca85ea66120cacdf"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<esc>",
+        "<wait>linux ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-{{user `centos_version`}}-minimal-desktop-puppet.ks<enter>"
+      ],
+      "disk_size": 500000,
+      "guest_os_type": "RedHat_64",
+      "http_directory": "../kickstart",
+      "iso_url": "{{user `centos_iso_url`}}",
+      "iso_checksum": "{{user `centos_iso_checksum`}}",
+      "iso_checksum_type": "md5",
+      "output_directory": "../output/base_box_{{user `centos_version`}}",
+      "shutdown_command": "sudo shutdown -P now",
+      "ssh_username": "root",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "90m",
+      "vm_name": "centos-{{user `centos_version`}}-minimal-desktop"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "mkdir /tmp/vboxguest",
+        "mount -t iso9660 -o loop /root/VBoxGuestAdditions.iso /tmp/vboxguest",
+        "/tmp/vboxguest/VBoxLinuxAdditions.run",
+        "umount /tmp/vboxguest",
+        "rm -rf /tmp/vboxguest /root/VBoxGuestAdditions.iso"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "yum -y remove kernel-devel",
+        "yum clean all",
+        "rm -rf /var/cache/* /usr/share/doc/*",
+        "cat /dev/zero > /tmp/zero.fill || rm -f /tmp/zero.fill"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "compression_level": 8,
+      "keep_input_artifact": true,
+      "output": "../output/base_box_{{user `centos_version`}}/centos-{{user `centos_version`}}-minimal-desktop.box"
+    }
+  ]
+}
