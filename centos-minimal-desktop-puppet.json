@@ -13,11 +13,11 @@
       ],
       "disk_size": 500000,
       "guest_os_type": "RedHat_64",
-      "http_directory": "../kickstart",
+      "http_directory": "kickstart",
       "iso_url": "{{user `centos_iso_url`}}",
       "iso_checksum": "{{user `centos_iso_checksum`}}",
       "iso_checksum_type": "md5",
-      "output_directory": "../output/base_box_{{user `centos_version`}}",
+      "output_directory": "output/base_box_{{user `centos_version`}}",
       "shutdown_command": "sudo shutdown -P now",
       "ssh_username": "root",
       "ssh_password": "vagrant",
@@ -51,7 +51,7 @@
       "type": "vagrant",
       "compression_level": 8,
       "keep_input_artifact": true,
-      "output": "../output/base_box_{{user `centos_version`}}/centos-{{user `centos_version`}}-minimal-desktop.box"
+      "output": "output/base_box_{{user `centos_version`}}/centos-{{user `centos_version`}}-minimal-desktop.box"
     }
   ]
 }

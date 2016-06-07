@@ -1,16 +1,29 @@
 { 
   "variables": {
-    "avalon_installer_dir": "../../avalon-installer",
-    "centos_version": "6"
+    "avalon_installer_dir": "../avalon-installer",
+    "avalon_version": "5.0",
+    "centos_version": "6",
+    "centos_iso_url": "http://ftp.osuosl.org/pub/centos/6/isos/x86_64/CentOS-6.8-x86_64-bin-DVD1.iso",
+    "centos_iso_checksum": "f73c2c4dd333c202ca85ea66120cacdf"
   },
   "builders": [
     {
-      "type": "virtualbox-ovf",
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<esc>",
+        "<wait>linux ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/avalon-centos-{{user `centos_version`}}.ks<enter>"
+      ],
+      "disk_size": 500000,
+      "guest_additions_mode": "disable",
+      "guest_os_type": "RedHat_64",
+      "http_directory": "kickstart",
+      "iso_url": "{{user `centos_iso_url`}}",
+      "iso_checksum": "{{user `centos_iso_checksum`}}",
+      "iso_checksum_type": "md5",
       "format": "ova",
       "headless": true,
-      "output_directory": "../avalon_box",
+      "output_directory": "output/avalon_box",
       "shutdown_command": "sudo shutdown -P now",
-      "source_path": "../output/base_box_{{user `centos_version`}}/centos-{{user `centos_version`}}-minimal-desktop.ovf",
       "ssh_username": "root",
       "ssh_password": "vagrant",
       "ssh_wait_timeout": "90m",
@@ -20,7 +33,8 @@
       "vboxmanage_post": [
         ["modifyvm", "{{.Name}}", "--nic1", "bridged"],
         ["guestproperty", "set", "{{.Name}}", "/VirtualBox/GuestAdd/Vbgl/Video/SavedMode", "1024x768x32"]
-      ]
+      ],
+      "vm_name": "Avalon Media System {{user `avalon_version`}}"
     }
   ],
   "provisioners": [
@@ -54,14 +68,20 @@
     {
       "type": "puppet-masterless",
       "manifest_file": "{{user `avalon_installer_dir`}}/manifests/init.pp",
-      "hiera_config_path": "../extras/hiera.yaml",
+      "hiera_config_path": "extras/hiera.yaml",
       "module_paths": ["{{user `avalon_installer_dir`}}/modules"],
       "extra_arguments": ["--fileserverconfig=/etc/puppet/fileserver.conf"],
       "ignore_exit_codes": true
     },
     {
+      "type": "file",
+      "source": "/opt/staging/avalon/deploy.log",
+      "destination": "deploy.log",
+      "direction": "download"
+    },
+    {
       "type": "shell",
-      "script": "../scripts/avalon_cleanup.sh"
+      "script": "scripts/avalon_cleanup.sh"
     }
   ]
 }
