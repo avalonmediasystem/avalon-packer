@@ -5,7 +5,7 @@ network --onboot yes --bootproto dhcp
 rootpw  --iscrypted $6$QjE38w7tKUDDMq1R$lNTufHdtwCrLJFrZS6p5QtMwJRVkSB0ULRgoIKzmXoOEZqiCwMFFGqh6wCPWRhiA0wYkMfd8pRcD.5P6PQ8ou1
 firewall --service=ssh
 authconfig --enableshadow --passalgo=sha512
-selinux --enforcing
+selinux --disabled
 timezone --utc America/Chicago
 services --enabled=NetworkManager,sshd
 eula --agreed
