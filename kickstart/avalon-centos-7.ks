@@ -19,8 +19,6 @@ autopart
 
 cdrom
 repo --name=base --baseurl=http://ftp.osuosl.org/pub/centos/7/os/x86_64/
-repo --name=puppetlabs-products --baseurl=http://yum.puppetlabs.com/el/7/products/x86_64/
-repo --name=puppetlabs-deps --baseurl=http://yum.puppetlabs.com/el/7/dependencies/x86_64/
 
 logging --level=info
 
@@ -31,17 +29,16 @@ logging --level=info
 ##############################################################################
 %packages
 @ base
-@ core 
+@ core
 @ X Window System
 libselinux-ruby
-puppetlabs-release
-puppet
 gnome-classic-session
 gnome-terminal
 nautilus-open-terminal
 control-center
 liberation-mono-fonts
 openssh-server
+firefox
 %end
 
 ##############################################################################

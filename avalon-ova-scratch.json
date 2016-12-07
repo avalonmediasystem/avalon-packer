@@ -1,10 +1,9 @@
-{ 
+{
   "variables": {
-    "avalon_installer_dir": "../avalon-installer",
-    "avalon_version": "5.0",
-    "centos_version": "6",
-    "centos_iso_url": "http://ftp.osuosl.org/pub/centos/6/isos/x86_64/CentOS-6.8-x86_64-bin-DVD1.iso",
-    "centos_iso_checksum": "f73c2c4dd333c202ca85ea66120cacdf"
+    "avalon_version": "6.0",
+    "centos_version": "7",
+    "centos_iso_url": "http://mirror.cs.vt.edu/pub/CentOS/7/isos/x86_64/CentOS-7-x86_64-DVD-1511.iso",
+    "centos_iso_checksum": "c875b0f1dabda14f00a3e261d241f63e"
   },
   "builders": [
     {
@@ -25,13 +24,14 @@
       "output_directory": "output/avalon_box",
       "shutdown_command": "sudo shutdown -P now",
       "ssh_username": "root",
-      "ssh_password": "vagrant",
-      "ssh_wait_timeout": "90m",
+      "ssh_password": "avalon",
+      "ssh_pty" : "true",
+      "ssh_wait_timeout": "20m",
       "vboxmanage": [
         ["modifyvm", "{{.Name}}", "--memory", "3072"]
       ],
       "vboxmanage_post": [
-        ["modifyvm", "{{.Name}}", "--nic1", "bridged"],
+        ["modifyvm", "{{.Name}}", "--nic1", "nat"],
         ["guestproperty", "set", "{{.Name}}", "/VirtualBox/GuestAdd/Vbgl/Video/SavedMode", "1024x768x32"]
       ],
       "vm_name": "Avalon Media System {{user `avalon_version`}}"
@@ -40,44 +40,32 @@
   "provisioners": [
     {
       "type": "shell",
+      "script": "scripts/install_docker.sh"
+    },
+    {
+      "type": "shell",
       "inline": [
-        "authconfig --passalgo=sha512 --update",
-        "mkdir -p /etc/puppet/avalon_files /etc/puppet/hiera"
+        "yum install -y git",
+        "git clone --branch=red5 --depth=1 https://github.com/avalonmediasystem/avalon-docker.git"
       ]
     },
     {
       "type": "file",
-      "source": "{{user `avalon_installer_dir`}}/hiera/data",
-      "destination": "/etc/puppet/hiera"
+      "source": ".env",
+      "destination": "avalon-docker/.env"
     },
     {
       "type": "file",
-      "source": "{{user `avalon_installer_dir`}}/hiera/data/avalon-ova.yaml",
-      "destination": "/etc/puppet/hiera/data/custom.yaml"
+      "source": "avalon-docker.service",
+      "destination": "/etc/systemd/system/avalon-docker.service"
     },
     {
-      "type": "file",
-      "source": "{{user `avalon_installer_dir`}}/files/",
-      "destination": "/etc/puppet/avalon_files"
-    },
-    {
-      "type": "file",
-      "source": "{{user `avalon_installer_dir`}}/fileserver.conf",
-      "destination": "/etc/puppet/fileserver.conf"
-    },
-    {
-      "type": "puppet-masterless",
-      "manifest_file": "{{user `avalon_installer_dir`}}/manifests/init.pp",
-      "hiera_config_path": "extras/hiera.yaml",
-      "module_paths": ["{{user `avalon_installer_dir`}}/modules"],
-      "extra_arguments": ["--fileserverconfig=/etc/puppet/fileserver.conf"],
-      "ignore_exit_codes": true
-    },
-    {
-      "type": "file",
-      "source": "/opt/staging/avalon/deploy.log",
-      "destination": "deploy.log",
-      "direction": "download"
+      "type": "shell",
+      "inline": [
+        "systemctl enable /etc/systemd/system/avalon-docker.service",
+        "cd avalon-docker",
+        "docker-compose pull"
+      ]
     },
     {
       "type": "shell",
