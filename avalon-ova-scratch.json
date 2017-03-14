@@ -24,11 +24,12 @@
       "output_directory": "output/avalon_box",
       "shutdown_command": "sudo shutdown -P now",
       "ssh_username": "root",
-      "ssh_password": "avalon",
+      "ssh_password": "vagrant",
       "ssh_pty" : "true",
       "ssh_wait_timeout": "20m",
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "3072"]
+        ["modifyvm", "{{.Name}}", "--memory", "3072"],
+        ["modifyvm", "{{.Name}}", "--vram", "16"]
       ],
       "vboxmanage_post": [
         ["modifyvm", "{{.Name}}", "--nic1", "nat"],
@@ -46,7 +47,7 @@
       "type": "shell",
       "inline": [
         "yum install -y git",
-        "git clone --branch=red5 --depth=1 https://github.com/avalonmediasystem/avalon-docker.git"
+        "git clone --branch=master --depth=1 https://github.com/avalonmediasystem/avalon-docker.git"
       ]
     },
     {
