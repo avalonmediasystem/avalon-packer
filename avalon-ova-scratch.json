@@ -1,9 +1,9 @@
 {
   "variables": {
-    "avalon_version": "6.0",
+    "avalon_version": "6.3",
     "centos_version": "7",
-    "centos_iso_url": "http://mirror.cs.vt.edu/pub/CentOS/7/isos/x86_64/CentOS-7-x86_64-DVD-1511.iso",
-    "centos_iso_checksum": "c875b0f1dabda14f00a3e261d241f63e"
+    "centos_iso_url": "http://mirror.cs.vt.edu/pub/CentOS/7/isos/x86_64/CentOS-7-x86_64-DVD-1708.iso",
+    "centos_iso_checksum": "82b4160df8d2a360f0f38432ad7e049b"
   },
   "builders": [
     {
