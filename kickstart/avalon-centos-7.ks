@@ -34,11 +34,9 @@ logging --level=info
 libselinux-ruby
 gnome-classic-session
 gnome-terminal
-nautilus-open-terminal
 control-center
 liberation-mono-fonts
 openssh-server
-firefox
 %end
 
 ##############################################################################

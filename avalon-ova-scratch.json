@@ -40,6 +40,22 @@
   ],
   "provisioners": [
     {
+      "type": "file",
+      "source": "scripts/google-chrome.repo",
+      "destination": "/etc/yum.repos.d/google-chrome.repo"
+    },
+    {
+      "type": "file",
+      "source": "scripts/install_chrome_firstboot.sh",
+      "destination": "/root/firstboot.sh"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "echo '@reboot root /bin/bash /root/firstboot.sh' >> /etc/crontab"
+      ]
+    },
+    {
       "type": "shell",
       "script": "scripts/install_docker.sh"
     },
