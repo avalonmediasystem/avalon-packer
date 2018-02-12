@@ -5,7 +5,9 @@ After=docker.service
 
 [Service]
 Restart=always
-WorkingDirectory=/root/avalon-docker
+User=avalon
+Group=docker
+WorkingDirectory=/home/avalon/avalon-docker
 ExecStart=/usr/local/bin/docker-compose up
 ExecStop=/usr/local/bin/docker-compose down
 [Install]

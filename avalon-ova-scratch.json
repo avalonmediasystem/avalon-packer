@@ -62,14 +62,21 @@
     {
       "type": "shell",
       "inline": [
+        "useradd -u 9999 -g docker -d /home/avalon -s /bin/bash -p pm/mq1CMMyr1A avalon"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
         "yum install -y git",
-        "git clone --branch=master --depth=1 https://github.com/avalonmediasystem/avalon-docker.git"
+        "git clone --branch=master --depth=1 https://github.com/avalonmediasystem/avalon-docker.git /home/avalon/avalon-docker",
+        "chown -R avalon:docker /home/avalon/avalon-docker"
       ]
     },
     {
       "type": "file",
       "source": ".env",
-      "destination": "avalon-docker/.env"
+      "destination": "/home/avalon/avalon-docker/.env"
     },
     {
       "type": "file",
@@ -80,7 +87,7 @@
       "type": "shell",
       "inline": [
         "systemctl enable /etc/systemd/system/avalon-docker.service",
-        "cd avalon-docker",
+        "cd /home/avalon/avalon-docker",
         "docker-compose pull"
       ]
     },
