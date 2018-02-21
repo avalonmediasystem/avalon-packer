@@ -1,9 +1,9 @@
 {
   "variables": {
-    "avalon_version": "6.0",
+    "avalon_version": "6.3",
     "centos_version": "7",
-    "centos_iso_url": "http://mirror.cs.vt.edu/pub/CentOS/7/isos/x86_64/CentOS-7-x86_64-DVD-1511.iso",
-    "centos_iso_checksum": "c875b0f1dabda14f00a3e261d241f63e"
+    "centos_iso_url": "http://mirror.cs.vt.edu/pub/CentOS/7/isos/x86_64/CentOS-7-x86_64-DVD-1708.iso",
+    "centos_iso_checksum": "82b4160df8d2a360f0f38432ad7e049b"
   },
   "builders": [
     {
@@ -40,20 +40,43 @@
   ],
   "provisioners": [
     {
+      "type": "file",
+      "source": "scripts/google-chrome.repo",
+      "destination": "/etc/yum.repos.d/google-chrome.repo"
+    },
+    {
+      "type": "file",
+      "source": "scripts/install_chrome_firstboot.sh",
+      "destination": "/root/firstboot.sh"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "echo '@reboot root /bin/bash /root/firstboot.sh' >> /etc/crontab"
+      ]
+    },
+    {
       "type": "shell",
       "script": "scripts/install_docker.sh"
     },
     {
       "type": "shell",
       "inline": [
+        "useradd -u 9999 -g docker -d /home/avalon -s /bin/bash -p pm/mq1CMMyr1A avalon"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
         "yum install -y git",
-        "git clone --branch=master --depth=1 https://github.com/avalonmediasystem/avalon-docker.git"
+        "git clone --branch=master --depth=1 https://github.com/avalonmediasystem/avalon-docker.git /home/avalon/avalon-docker",
+        "chown -R avalon:docker /home/avalon/avalon-docker"
       ]
     },
     {
       "type": "file",
       "source": ".env",
-      "destination": "avalon-docker/.env"
+      "destination": "/home/avalon/avalon-docker/.env"
     },
     {
       "type": "file",
@@ -64,7 +87,7 @@
       "type": "shell",
       "inline": [
         "systemctl enable /etc/systemd/system/avalon-docker.service",
-        "cd avalon-docker",
+        "cd /home/avalon/avalon-docker",
         "docker-compose pull"
       ]
     },
