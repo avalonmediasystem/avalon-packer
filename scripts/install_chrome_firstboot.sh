@@ -1,4 +1,5 @@
 #Install google chrome on reboot
+yum -y install epel-release
 yum -y install google-chrome-stable
 /bin/cat /etc/crontab | /bin/grep -v firstboot > /etc/crontab.tmp
 /bin/rm -f /etc/crontab
